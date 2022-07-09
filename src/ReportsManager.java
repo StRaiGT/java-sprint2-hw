@@ -31,7 +31,6 @@ public class ReportsManager {
             String fileContents = readFileContentsOrNull(monthlyReportPath);
             if (fileContents != null) {
                 MonthlyReport monthlyReport = new MonthlyReport(fileContents, i);
-
                 monthlyReports.add(monthlyReport);
             }
         }
@@ -57,6 +56,7 @@ public class ReportsManager {
         }
         System.out.println("Начата сверка отчетов за " + year + " год");
         for (int i = 1; i <= 12; i++) {
+            // проверка наличия отчетов за текущий месяц
             int index = -1;
             for (MonthlyReport monthlyReport : monthlyReportsByYear.get(year)) {
                 if (monthlyReport.monthNumber == i){
@@ -69,11 +69,12 @@ public class ReportsManager {
                 continue;
             }
 
-            if (!yearlyReports.get(year).isMonth(i)){
+            if (!yearlyReports.get(year).isMonthFind(i)){
                 System.out.println("Отсутствуют годовой отчет за " + monthNames[i - 1]);
                 continue;
             }
 
+            // сверка данных
             int incomeMonthlyReport = monthlyReportsByYear.get(year).get(index).getSumIncome();
             int incomeYearlyReport = yearlyReports.get(year).getMonthIncome(i);
             if (incomeMonthlyReport != incomeYearlyReport) {
@@ -124,7 +125,7 @@ public class ReportsManager {
         if (yearlyReports.containsKey(year)) {
             System.out.println(year + " год:");
             for (int i = 1; i <= 12; i++) {
-                if (yearlyReports.get(year).isMonth(i)) {
+                if (yearlyReports.get(year).isMonthFind(i)) {
                     System.out.println("Прибыль за " + monthNames[i - 1] + " составила " + yearlyReports.get(year).getMonthProfit(i));
                 }
             }

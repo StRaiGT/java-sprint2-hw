@@ -1,9 +1,10 @@
 import java.util.ArrayList;
 
 public class YearlyReport {
-    ArrayList<YearlyChange> yearlyChanges = new ArrayList<>();
+    ArrayList<YearlyChange> yearlyChanges;
 
     public YearlyReport(String fileContents) {
+        yearlyChanges = new ArrayList<>();
         String[] lines = fileContents.split("\n");
         for (int i = 1; i < lines.length; i++) {
             String[] lineContents = lines[i].split(",");
@@ -15,7 +16,7 @@ public class YearlyReport {
         }
     }
 
-    public boolean isMonth(int numberMonth){
+    public boolean isMonthFind(int numberMonth){
         boolean result = false;
         for (YearlyChange yearlyChange : yearlyChanges){
             if (yearlyChange.month == numberMonth){

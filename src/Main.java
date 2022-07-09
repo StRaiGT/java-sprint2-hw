@@ -12,25 +12,23 @@ public class Main {
             int command = 0;
             try {
                 command = Integer.parseInt(inputStr);
-                if ((command < 1) || (command > 5)) {
-                    throw new Exception();
-                }
-
                 if (command == 1) {
-                    int year = checkInt();
-                    reportsManager.addMonthlyReports(year); // Считать все месячные отчёты
+                    int year = getInt();
+                    reportsManager.addMonthlyReports(year);
                 } else if (command == 2) {
-                    int year = checkInt();
-                    reportsManager.addYearlyReports(year); // Считать годовой отчёт
+                    int year = getInt();
+                    reportsManager.addYearlyReports(year);
                 } else if (command == 3) {
-                    int year = checkInt(); // Сверить отчёты
+                    int year = getInt();
                     reportsManager.equalsReports(year);
                 } else if (command == 4) {
-                    int year = checkInt();
-                    reportsManager.getMonthlyReports(year); // Вывести информацию о всех месячных отчётах
+                    int year = getInt();
+                    reportsManager.getMonthlyReports(year);
                 } else if (command == 5) {
-                    int year = checkInt();
-                    reportsManager.getYearlyReports(year); // Вывести информацию о годовом отчёте
+                    int year = getInt();
+                    reportsManager.getYearlyReports(year);
+                } else {
+                    throw new Exception();
                 }
             }
             catch (Exception e){
@@ -55,7 +53,7 @@ public class Main {
         System.out.println("exit - Выйти из приложения");
     }
 
-    public static int checkInt(){
+    public static int getInt(){
         while (true) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Введите номер года:");
