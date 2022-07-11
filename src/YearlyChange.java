@@ -1,11 +1,11 @@
 public class YearlyChange {
     int month;
     int amount;
-    boolean is_expense;
+    boolean isExpense;
 
-    public YearlyChange(int month, int amount, boolean is_expense){
+    public YearlyChange(int month, int amount, boolean isExpense){
         this.month = month;
         this.amount = amount;
-        this.is_expense = is_expense;
+        this.isExpense = isExpense;
     }
 }

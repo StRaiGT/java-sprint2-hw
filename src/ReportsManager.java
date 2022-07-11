@@ -24,39 +24,42 @@ public class ReportsManager {
         for (int i = 1; i <= 12; i++) {
             String monthlyReportPath;
             if (i < 10) {
-                monthlyReportPath = "resources/m." + year + "0" + i + ".csv";
+                monthlyReportPath = String.format("resources/m.%d0%d.csv", year, i);
             } else {
-                monthlyReportPath = "resources/m." + year + i + ".csv";
+                monthlyReportPath = String.format("resources/m.%d%d.csv", year, i);
             }
             String fileContents = readFileContentsOrNull(monthlyReportPath);
             if (fileContents != null) {
-                MonthlyReport monthlyReport = new MonthlyReport(fileContents, i);
-                monthlyReports.add(monthlyReport);
+                monthlyReports.add(new MonthlyReport(fileContents, i));
             }
         }
         monthlyReportsByYear.put(year, monthlyReports);
-        System.out.println("Считаны " + monthlyReportsByYear.get(year).size() + " месячных отчетов за " + year + " год.\n");
+        System.out.println(String.format("Считаны %d месячных отчетов за %d год.\n", monthlyReportsByYear.get(year).size(), year));
     }
 
     public void addYearlyReports(int year) {
-        if (readFileContentsOrNull("resources/y." + year + ".csv") != null) {
-            YearlyReport yearlyReport = new YearlyReport(readFileContentsOrNull("resources/y." + year + ".csv"));
-            yearlyReports.put(year, yearlyReport);
+        String fileContents = readFileContentsOrNull(String.format("resources/y.%d.csv", year));
+        if (fileContents != null) {
+            yearlyReports.put(year, new YearlyReport(fileContents));
             System.out.println("Считан годовой отчет за " + year + " год.\n");
         } else {
             System.out.println("Годовой отчет за " + year + " год не найден.\n");
         }
-
     }
+
     public void equalsReports(int year) {
-        boolean result = true;
+        boolean isSuccess = true;
         if (!yearlyReports.containsKey(year) | !monthlyReportsByYear.containsKey(year)) {
+            System.out.println("Не внесены месячные или годовые отчеты за " + year + " год.\n");
+            return;
+        }
+        if (monthlyReportsByYear.get(year).size() == 0) {
             System.out.println("Не внесены месячные или годовые отчеты за " + year + " год.\n");
             return;
         }
         System.out.println("Начата сверка отчетов за " + year + " год");
         for (int i = 1; i <= 12; i++) {
-            // проверка наличия отчетов за текущий месяц
+            // поиск наличия отчета в месячных отчетах
             int index = -1;
             for (MonthlyReport monthlyReport : monthlyReportsByYear.get(year)) {
                 if (monthlyReport.monthNumber == i){
@@ -68,31 +71,40 @@ public class ReportsManager {
                 System.out.println("Отсутствуют месячный отчет за " + monthNames[i - 1]);
                 continue;
             }
-
+            // поиск наличия отчета в годовых отчетах
             if (!yearlyReports.get(year).isMonthFind(i)){
                 System.out.println("Отсутствуют годовой отчет за " + monthNames[i - 1]);
                 continue;
             }
-
             // сверка данных
-            int incomeMonthlyReport = monthlyReportsByYear.get(year).get(index).getSumIncome();
-            int incomeYearlyReport = yearlyReports.get(year).getMonthIncome(i);
-            if (incomeMonthlyReport != incomeYearlyReport) {
-                System.out.println("Обнаружено несоответствие доходов за " + monthNames[i - 1]);
-                result = false;
-            }
-
-            int expenseMonthlyReport = monthlyReportsByYear.get(year).get(index).getSumExpense();
-            int expenseYearlyReport = yearlyReports.get(year).getMonthExpense(i);
-            if (expenseMonthlyReport != expenseYearlyReport) {
-                System.out.println("Обнаружено несоответствие расходов за " + monthNames[i - 1]);
-                result = false;
+            if (!equalsIncomeReport(year, index, i) || !equalsExpenseReport(year, index, i)) {
+                isSuccess = false;
             }
         }
-        if (result) {
+        if (isSuccess) {
             System.out.println("Сверка отчетов успешно завершена");
         }
         System.out.println();
+    }
+
+    public boolean equalsIncomeReport(int year, int monthIndex, int yearMonthIndex) {
+        int incomeMonthlyReport = monthlyReportsByYear.get(year).get(monthIndex).getSumIncome();
+        int incomeYearlyReport = yearlyReports.get(year).getMonthIncome(yearMonthIndex);
+        if (incomeMonthlyReport != incomeYearlyReport) {
+            System.out.println("Обнаружено несоответствие доходов за " + monthNames[yearMonthIndex - 1]);
+            return false;
+        }
+        return true;
+    }
+
+    public boolean equalsExpenseReport(int year, int monthIndex, int yearMonthIndex) {
+        int expenseMonthlyReport = monthlyReportsByYear.get(year).get(monthIndex).getSumExpense();
+        int expenseYearlyReport = yearlyReports.get(year).getMonthExpense(yearMonthIndex);
+        if (expenseMonthlyReport != expenseYearlyReport) {
+            System.out.println("Обнаружено несоответствие расходов за " + monthNames[yearMonthIndex - 1]);
+            return false;
+        }
+        return true;
     }
 
     public void getMonthlyReports(int year) {
@@ -101,13 +113,13 @@ public class ReportsManager {
                 System.out.println(monthNames[monthlyReport.monthNumber - 1] + " " + year + " года:");
 
                 int indexMaxIncome = monthlyReport.getIndexMaxIncome();
-                String nameMaxIncome = monthlyReport.monthlyChanges.get(indexMaxIncome).item_name;
-                int maxIncome = monthlyReport.monthlyChanges.get(indexMaxIncome).quantity * monthlyReport.monthlyChanges.get(indexMaxIncome).sum_of_one;
+                String nameMaxIncome = monthlyReport.monthlyChanges.get(indexMaxIncome).itemName;
+                int maxIncome = monthlyReport.monthlyChanges.get(indexMaxIncome).quantity * monthlyReport.monthlyChanges.get(indexMaxIncome).sumOfOne;
                 System.out.println("Самый прибыльный товар - " + nameMaxIncome + ". Размер прибыли - " + maxIncome);
 
                 int indexMaxExpense = monthlyReport.getIndexMaxExpense();
-                String nameMaxExpense = monthlyReport.monthlyChanges.get(indexMaxExpense).item_name;
-                int maxExpense = monthlyReport.monthlyChanges.get(indexMaxExpense).quantity * monthlyReport.monthlyChanges.get(indexMaxExpense).sum_of_one;
+                String nameMaxExpense = monthlyReport.monthlyChanges.get(indexMaxExpense).itemName;
+                int maxExpense = monthlyReport.monthlyChanges.get(indexMaxExpense).quantity * monthlyReport.monthlyChanges.get(indexMaxExpense).sumOfOne;
                 System.out.println("Самый большие траты - " + nameMaxExpense + ". Размер трат - " + maxExpense);
 
                 System.out.println();

@@ -2,34 +2,37 @@ import java.util.ArrayList;
 
 public class YearlyReport {
     ArrayList<YearlyChange> yearlyChanges;
+    int monthInYear = 12;
 
     public YearlyReport(String fileContents) {
         yearlyChanges = new ArrayList<>();
         String[] lines = fileContents.split("\n");
         for (int i = 1; i < lines.length; i++) {
-            String[] lineContents = lines[i].split(",");
-            int month = Integer.parseInt(lineContents[0]);
-            int amount = Integer.parseInt(lineContents[1]);
-            boolean is_expense = Boolean.parseBoolean(lineContents[2]);
-            YearlyChange yearlyChange = new YearlyChange(month, amount, is_expense);
-            yearlyChanges.add(yearlyChange);
+            int monthPosition = 0;
+            int amountPosition = 1;
+            int isExpensePosition = 2;
+
+            String[] words = lines[i].split(",");
+            int month = Integer.parseInt(words[monthPosition]);
+            int amount = Integer.parseInt(words[amountPosition]);
+            boolean isExpense = Boolean.parseBoolean(words[isExpensePosition]);
+            yearlyChanges.add(new YearlyChange(month, amount, isExpense));
         }
     }
 
     public boolean isMonthFind(int numberMonth){
-        boolean result = false;
         for (YearlyChange yearlyChange : yearlyChanges){
             if (yearlyChange.month == numberMonth){
-                result = true;
+                return true;
             }
         }
-        return result;
+        return false;
     }
 
     public int getMonthIncome(int numberMonth){
         int monthExpense = 0;
         for (YearlyChange yearlyChange : yearlyChanges) {
-            if ((yearlyChange.month == numberMonth) & (!yearlyChange.is_expense)) {
+            if ((yearlyChange.month == numberMonth) && (!yearlyChange.isExpense)) {
                 monthExpense = yearlyChange.amount;
                 break;
             }
@@ -40,7 +43,7 @@ public class YearlyReport {
     public int getMonthExpense(int numberMonth){
         int monthExpense = 0;
         for (YearlyChange yearlyChange : yearlyChanges) {
-            if ((yearlyChange.month == numberMonth) & (yearlyChange.is_expense)) {
+            if ((yearlyChange.month == numberMonth) && (yearlyChange.isExpense)) {
                 monthExpense = yearlyChange.amount;
                 break;
             }
@@ -57,7 +60,7 @@ public class YearlyReport {
         for (int i = 1; i < yearlyChanges.size(); i++) {
             allMonthIncome += getMonthIncome(i);
         }
-        return allMonthIncome / 12;
+        return allMonthIncome / monthInYear;
     }
 
     public int averageMonthExpense() {
@@ -65,8 +68,6 @@ public class YearlyReport {
         for (int i = 1; i < yearlyChanges.size(); i++) {
             allMonthExpense += getMonthExpense(i);
         }
-        return allMonthExpense / 12;
+        return allMonthExpense / monthInYear;
     }
-
-
 }

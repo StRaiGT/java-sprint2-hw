@@ -10,21 +10,25 @@ public class MonthlyReport {
 
         String[] lines = fileContents.split("\n");
         for (int i = 1; i < lines.length; i++) {
-            String[] lineContents = lines[i].split(",");
-            String item_name = lineContents[0];
-            boolean is_expense = Boolean.parseBoolean(lineContents[1]);
-            int quantity = Integer.parseInt(lineContents[2]);
-            int sum_of_one = Integer.parseInt(lineContents[3]);
-            MonthlyChange monthlyChange = new MonthlyChange(item_name, is_expense, quantity, sum_of_one);
-            monthlyChanges.add(monthlyChange);
+            int itemNamePosition = 0;
+            int isExpensePosition = 1;
+            int quantityPosition = 2;
+            int sumOfOnePosition = 3;
+
+            String[] words = lines[i].split(",");
+            String itemName = words[itemNamePosition];
+            boolean isExpense = Boolean.parseBoolean(words[isExpensePosition]);
+            int quantity = Integer.parseInt(words[quantityPosition]);
+            int sumOfOne = Integer.parseInt(words[sumOfOnePosition]);
+            monthlyChanges.add(new MonthlyChange(itemName, isExpense, quantity, sumOfOne));
         }
     }
 
     public int getSumIncome() {
         int SumIncome = 0;
         for (MonthlyChange monthlyChange : monthlyChanges) {
-            if (!monthlyChange.is_expense) {
-                SumIncome += monthlyChange.quantity * monthlyChange.sum_of_one;
+            if (!monthlyChange.isExpense) {
+                SumIncome += monthlyChange.quantity * monthlyChange.sumOfOne;
             }
         }
         return SumIncome;
@@ -33,8 +37,8 @@ public class MonthlyReport {
     public int getSumExpense (){
         int SumExpense = 0;
         for (MonthlyChange monthlyChange : monthlyChanges) {
-            if (monthlyChange.is_expense) {
-                SumExpense += monthlyChange.quantity * monthlyChange.sum_of_one;
+            if (monthlyChange.isExpense) {
+                SumExpense += monthlyChange.quantity * monthlyChange.sumOfOne;
             }
         }
         return SumExpense;
@@ -43,9 +47,9 @@ public class MonthlyReport {
     public int getIndexMaxIncome() {
         int indexMaxIncome = 0;
         for (MonthlyChange monthlyChange : monthlyChanges) {
-            if (!monthlyChange.is_expense) {
-                int curIncome = monthlyChange.quantity * monthlyChange.sum_of_one;
-                int maxIncome = monthlyChanges.get(indexMaxIncome).quantity * monthlyChanges.get(indexMaxIncome).sum_of_one;
+            if (!monthlyChange.isExpense) {
+                int curIncome = monthlyChange.quantity * monthlyChange.sumOfOne;
+                int maxIncome = monthlyChanges.get(indexMaxIncome).quantity * monthlyChanges.get(indexMaxIncome).sumOfOne;
                 if (curIncome > maxIncome) {
                     indexMaxIncome = monthlyChanges.indexOf(monthlyChange);
                 }
@@ -57,9 +61,9 @@ public class MonthlyReport {
     public int getIndexMaxExpense(){
         int indexMaxExpense = 0;
         for (MonthlyChange monthlyChange : monthlyChanges) {
-            if (monthlyChange.is_expense) {
-                int curExpense = monthlyChange.quantity * monthlyChange.sum_of_one;
-                int maxExpense = monthlyChanges.get(indexMaxExpense).quantity * monthlyChanges.get(indexMaxExpense).sum_of_one;
+            if (monthlyChange.isExpense) {
+                int curExpense = monthlyChange.quantity * monthlyChange.sumOfOne;
+                int maxExpense = monthlyChanges.get(indexMaxExpense).quantity * monthlyChanges.get(indexMaxExpense).sumOfOne;
                 if (curExpense > maxExpense) {
                     indexMaxExpense = monthlyChanges.indexOf(monthlyChange);
                 }

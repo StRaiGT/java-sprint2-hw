@@ -28,16 +28,15 @@ public class Main {
                     int year = getInt();
                     reportsManager.getYearlyReports(year);
                 } else {
-                    throw new Exception();
+                    throw new Exception("Не найдено подходящей числовой команды.");
                 }
             }
             catch (Exception e){
-                if (inputStr.toLowerCase().equals("exit")){
+                if (inputStr.equalsIgnoreCase("exit")){
                     System.out.println("Выход из приложения.");
                     break;
                 } else {
                     System.out.println("Такой команды не существует.\n");
-                    continue;
                 }
             }
         }
