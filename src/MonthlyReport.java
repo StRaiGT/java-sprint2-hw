@@ -1,7 +1,8 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class MonthlyReport {
-    ArrayList<MonthlyChange> monthlyChanges;
+    List<MonthlyChange> monthlyChanges;
     int monthNumber;
 
     public MonthlyReport(String fileContents, int monthNumber) {

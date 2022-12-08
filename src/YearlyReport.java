@@ -1,7 +1,8 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class YearlyReport {
-    ArrayList<YearlyChange> yearlyChanges;
+    List<YearlyChange> yearlyChanges;
     int monthInYear = 12;
 
     public YearlyReport(String fileContents) {

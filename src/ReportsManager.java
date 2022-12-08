@@ -3,10 +3,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ReportsManager {
-    HashMap<Integer, ArrayList<MonthlyReport>> monthlyReportsByYear = new HashMap<>();
-    HashMap<Integer, YearlyReport> yearlyReports = new HashMap<>();
+    Map<Integer, List<MonthlyReport>> monthlyReportsByYear = new HashMap<>();
+    Map<Integer, YearlyReport> yearlyReports = new HashMap<>();
     String[] monthNames = new String[] {"январь", "февраль", "март", "апрель", "май", "июнь",
             "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"};
 
@@ -20,7 +22,7 @@ public class ReportsManager {
     }
 
     public void addMonthlyReports(int year) {
-        ArrayList<MonthlyReport> monthlyReports = new ArrayList<>();
+        List<MonthlyReport> monthlyReports = new ArrayList<>();
         for (int i = 1; i <= 12; i++) {
             String monthlyReportPath;
             if (i < 10) {
